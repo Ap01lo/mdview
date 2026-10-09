@@ -1,0 +1,16 @@
+node_modules/
+*.log
+.DS_Store
+.env
+.env.local
+*.tgz
+diag.js
+shot-*.png
+latex-*.png
+fixed-*.png
+dir-*.png
+layout-problem.png
+sidebar-bug.png
+*.md.bak
+# Screenshots and demo gif are big; ship them on GitHub but not via npm.
+docs/screenshots/

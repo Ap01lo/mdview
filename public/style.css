@@ -1,0 +1,644 @@
+/* mdview styles — all visual tokens are CSS variables that get populated
+   at runtime by JS from a theme file served by the backend (themes/*.json).
+   This file defines the *layout*, not the visual identity. */
+
+/* Layout tokens (independent of theme) */
+:root {
+  --mdview-md-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  --mdview-md-font-size: 15px;
+}
+
+/* Theme tokens are applied at runtime via [style*="--bg"] on :root.
+   We define the defaults here as fallbacks only — the real values
+   come from the active theme. */
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f6f8fa;
+  --bg-sidebar: #f6f8fa;
+  --bg-code: #f6f8fa;
+  --fg: #1f2328;
+  --fg-muted: #57606a;
+  --border: #d0d7de;
+  --border-strong: #afb8c1;
+  --accent: #0969da;
+  --accent-bg: #ddf4ff;
+  --hover: #eaeef2;
+  --selected: #0969da33;
+  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+  --md-fg: #1f2328;
+  --md-link: #0969da;
+  --md-code-bg: #f6f8fa;
+  --md-blockquote-border: #d0d7de;
+  --content-max: 720px;
+  --md-padding-x: 32px;
+  --md-padding-y: 32px;
+  --md-line-height: 1.75;
+  --md-h1-size: 2em;
+  --md-h2-size: 1.5em;
+  --md-h3-size: 1.25em;
+  --md-table-top: 2px solid #1f2328;
+  --md-table-mid: 1px solid #1f2328;
+  --md-table-bottom: 2px solid #1f2328;
+  --md-table-align: center;
+  --md-heading-weight: 600;
+  --md-h1-border: 1px solid #d0d7de;
+  --md-h2-border: 1px solid #d0d7de;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo { width: 24px; height: 24px; }
+.title { font-weight: 600; }
+.root {
+  color: var(--fg-muted);
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 12px;
+  margin-left: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
+  cursor: pointer;
+}
+.root:hover { color: var(--accent); }
+.open-dir-btn { margin-left: 6px; }
+.tools { display: flex; align-items: center; gap: 8px; }
+#search {
+  width: 280px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 13px;
+  outline: none;
+}
+#search:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 6px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.icon-btn:hover { background: var(--hover); }
+
+/* layout */
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: calc(100vh - 48px);
+  transition: grid-template-columns 0.15s ease;
+}
+.layout.collapsed {
+  /* collapse the sidebar column to zero and clip the sidebar completely */
+  grid-template-columns: 0px 1fr;
+}
+.layout.collapsed .sidebar {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  border-right: none;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* sidebar */
+.sidebar {
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tree {
+  flex: 1;
+  overflow: auto;
+  padding: 6px 0;
+  outline: none;
+}
+.sidebar-foot {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--fg-muted);
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+}
+
+/* settings anchor pinned to bottom-left of sidebar */
+.settings-anchor {
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--border);
+}
+.settings-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--fg);
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+.settings-btn:hover { background: var(--hover); }
+.settings-btn[aria-expanded="true"] { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.settings-gear { font-size: 14px; }
+
+/* tree */
+.node {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  white-space: nowrap;
+  border-radius: 4px;
+  margin: 1px 4px;
+}
+.node:hover { background: var(--hover); }
+.node.active { background: var(--selected); color: var(--accent); }
+.node .twist {
+  display: inline-block;
+  width: 16px;
+  text-align: center;
+  color: var(--fg-muted);
+  transition: transform 0.1s ease;
+}
+.node.dir.expanded .twist { transform: rotate(90deg); }
+.node .icon { margin-right: 6px; font-size: 13px; }
+.node .name { overflow: hidden; text-overflow: ellipsis; }
+.node.file { color: var(--fg); }
+.node.file .icon { color: var(--fg-muted); }
+.node.md .icon { color: var(--accent); }
+.children { display: none; padding-left: 14px; }
+.node.dir.expanded + .children { display: block; }
+
+/* viewer */
+.viewer {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: var(--bg);
+}
+.crumbs {
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow-x: auto;
+  flex: 0 0 auto;
+}
+.crumbs span.sep { opacity: 0.5; margin: 0 4px; }
+.crumbs span.part:hover { color: var(--accent); cursor: pointer; }
+
+/* Markdown body — single column with consistent alignment.
+   We center the WHOLE COLUMN inside the viewer, then every block element
+   hugs the column's LEFT edge. This is the convention used by GitHub,
+   Medium, Notion — the eye anchors to a single vertical axis on the left,
+   not centered inside a column (which looks scattered). */
+.md-body {
+  flex: 1;
+  overflow: auto;
+  padding: var(--md-padding-y, 32px) 0 80px;
+  font-family: var(--mdview-md-font-family);
+  font-size: var(--mdview-md-font-size);
+  line-height: var(--md-line-height, 1.75);
+  color: var(--md-fg);
+  text-align: left;
+  /* When the viewer is wide, leave at least page-space-wide gutters on each
+     side. When the viewer is narrower than content-max + 2*padding, the
+     remaining width becomes the column width (responsive). */
+  padding-left: max(var(--md-padding-x, 32px), calc((100% - var(--content-max, 720px)) / 2));
+  padding-right: max(var(--md-padding-x, 32px), calc((100% - var(--content-max, 720px)) / 2));
+}
+/* Default rule for block-level children: don't add auto centering —
+   left-align within the column's natural flow. */
+.md-body > * {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 100%;
+}
+/* Centered exceptions: tables, images, hr, display math */
+.md-body > table,
+.md-body > figure,
+.md-body > .math-display,
+.md-body > hr {
+  margin-left: auto;
+  margin-right: auto;
+}
+/* A paragraph containing only an image: center the image */
+.md-body p:has(> img:only-child) {
+  text-align: center;
+}
+
+/* placeholder centered nicely */
+.placeholder {
+  text-align: center;
+  color: var(--fg-muted);
+  margin-top: 80px;
+}
+.placeholder h2 { color: var(--fg); }
+.placeholder .hint { font-size: 13px; }
+.placeholder kbd {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+}
+
+/* markdown typography — clean and proportional */
+.md-body h1, .md-body h2, .md-body h3,
+.md-body h4, .md-body h5, .md-body h6 {
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  font-weight: var(--md-heading-weight, 600);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.md-body > h1:first-child,
+.md-body > h2:first-child { margin-top: 0; }
+.md-body h1 {
+  font-size: var(--md-h1-size, 2em);
+  border-bottom: var(--md-h1-border, 1px solid var(--border));
+  padding-bottom: 0.3em;
+}
+.md-body h2 {
+  font-size: var(--md-h2-size, 1.5em);
+  border-bottom: var(--md-h2-border, 1px solid var(--border));
+  padding-bottom: 0.3em;
+}
+.md-body h3 { font-size: var(--md-h3-size, 1.25em); }
+.md-body h4 { font-size: 1.05em; }
+.md-body h5 { font-size: 1em; }
+.md-body h6 { font-size: 0.9em; color: var(--fg-muted); }
+.md-body p { margin: 0 0 1em; }
+.md-body a { color: var(--md-link); text-decoration: none; border-bottom: 1px solid transparent; }
+.md-body a:hover { text-decoration: underline; }
+.md-body ul, .md-body ol { margin: 0 0 1em; padding-left: 2em; }
+.md-body li { margin: 0.3em 0; }
+.md-body li > p { margin: 0.3em 0; }
+.md-body blockquote {
+  margin: 0 0 1em;
+  padding: 0.2em 1em;
+  color: var(--fg-muted);
+  border-left: 4px solid var(--md-blockquote-border);
+  background: transparent;
+}
+.md-body hr { border: 0; border-top: 1px solid var(--border); margin: 2em auto; max-width: var(--content-max); }
+
+/* code */
+.md-body :not(pre) > code {
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: var(--md-code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.md-body pre {
+  background: var(--md-code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow: auto;
+  margin: 0 0 1em;
+  font-size: 0.9em;
+  line-height: 1.55;
+}
+.md-body pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 1em;
+  border: none;
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+}
+
+/* Three-line table (academic style):
+   thick top, thin mid, thick bottom; centered alignment */
+.md-body table {
+  border-collapse: collapse;
+  margin: 1.2em auto;
+  font-size: 0.95em;
+  width: auto;
+}
+.md-body table thead tr {
+  border-top: var(--md-table-top);
+  border-bottom: var(--md-table-mid);
+}
+.md-body table tbody tr:last-child {
+  border-bottom: var(--md-table-bottom);
+}
+.md-body table th,
+.md-body table td {
+  border: none;
+  padding: 8px 18px;
+  text-align: var(--md-table-align, center);
+  vertical-align: top;
+  background: transparent;
+}
+.md-body table th { font-weight: var(--md-heading-weight, 600); }
+.md-body table tbody tr:nth-child(even) td { background: transparent; }
+.md-body table caption {
+  caption-side: top;
+  padding: 4px 0;
+  color: var(--fg-muted);
+  font-size: 0.9em;
+  text-align: center;
+}
+
+/* images: scale to column width but center */
+.md-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+  border-radius: 4px;
+}
+
+/* KaTeX math: break out of inline column for display math, keep inline inline */
+.md-body .katex-display {
+  margin: 1em 0 !important;
+  padding: 0.2em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.md-body .katex { font-size: 1.05em; }
+.md-body .math-display {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+/* settings panel */
+.settings-panel {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  width: 320px;
+  max-height: min(70vh, 540px);
+  overflow: auto;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
+  padding: 10px 12px;
+  z-index: 50;
+  font-size: 13px;
+}
+.settings-panel.hidden { display: none; }
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.settings-header-actions { display: flex; gap: 6px; }
+.settings-mini-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.settings-mini-btn:hover { background: var(--hover); }
+
+.shortcuts-list { padding: 8px 0; }
+.shortcut-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+.shortcut-label { color: var(--fg); }
+.shortcut-input {
+  width: 130px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-alt);
+  color: var(--fg);
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+}
+.shortcut-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
+.shortcut-input.conflict { border-color: #cf222e; color: #cf222e; }
+@media (prefers-color-scheme: dark) { .shortcut-input.conflict { color: #ff7b72; border-color: #f85149; } }
+.shortcut-conflict { grid-column: 1 / -1; font-size: 11px; color: #cf222e; padding-left: 4px; }
+@media (prefers-color-scheme: dark) { .shortcut-conflict { color: #ff7b72; } }
+
+.settings-divider { height: 1px; background: var(--border); margin: 8px -4px; }
+.settings-section-title { font-size: 12px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.settings-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; padding: 4px 0; }
+.settings-toggle input { accent-color: var(--accent); }
+
+/* font presets */
+.font-presets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.font-preset {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--fg);
+  text-align: left;
+}
+.font-preset:hover { border-color: var(--accent); }
+.font-preset[aria-checked="true"] {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.fp-name { font-size: 11px; color: var(--fg-muted); }
+.font-preset[aria-checked="true"] .fp-name { color: var(--accent); }
+.fp-sample { font-size: 14px; line-height: 1.2; }
+
+/* font size row */
+.font-size-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+#font-size-input {
+  accent-color: var(--accent);
+  width: 100%;
+}
+.font-size-value {
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--fg);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* custom font picker */
+.custom-font-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+#custom-font-input {
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--fg);
+  font-size: 12px;
+  outline: none;
+}
+#custom-font-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-bg);
+}
+.custom-font-preview {
+  font-size: 13px;
+  color: var(--fg);
+  padding: 6px 8px;
+  margin-top: 4px;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  background: var(--bg-alt);
+  min-height: 18px;
+  word-break: break-word;
+}
+
+/* theme picker */
+.theme-picker-row { display: grid; grid-template-columns: 1fr; gap: 4px; margin-bottom: 4px; }
+.theme-select {
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--fg);
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+.theme-select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
+.theme-description {
+  font-size: 11px;
+  color: var(--fg-muted);
+  margin: 4px 0 8px;
+  min-height: 14px;
+}
+
+.settings-tip {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--accent);
+  min-height: 16px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.settings-tip.visible { opacity: 1; }
+
+/* loading / error */
+.loading, .error {
+  padding: 40px;
+  text-align: center;
+  color: var(--fg-muted);
+}
+.error { color: #cf222e; }
+
+/* responsive */
+@media (max-width: 800px) {
+  .layout { grid-template-columns: 240px 1fr; }
+  #search { width: 160px; }
+  .settings-panel { width: calc(100vw - 24px); left: 12px; right: 12px; }
+}
+@media (max-width: 560px) {
+  .layout { grid-template-columns: 0 1fr; }
+  .sidebar { position: fixed; inset: 48px 0 0 0; z-index: 9; transform: translateX(-100%); transition: transform 0.15s; }
+  .layout.mobile-open .sidebar { transform: translateX(0); box-shadow: var(--shadow); }
+  .md-body {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "@ap01lo/mdview",
+  "version": "1.0.0",
+  "description": "Portable web-based Markdown viewer with file tree navigation, themes, LaTeX, and a native folder picker.",
+  "main": "bin/mdview.js",
+  "bin": {
+    "mdview": "./bin/mdview.js"
+  },
+  "scripts": {
+    "start": "node bin/mdview.js",
+    "link": "npm link",
+    "test": "node bin/mdview.js --help",
+    "screenshots": "node scripts/screenshots.js",
+    "prepublishOnly": "node bin/mdview.js --help"
+  },
+  "files": [
+    "bin",
+    "public",
+    "themes",
+    "examples",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "markdown",
+    "viewer",
+    "cli",
+    "documentation",
+    "latex",
+    "themes",
+    "reader",
+    "markdown-viewer",
+    "markdown-reader"
+  ],
+  "author": {
+    "name": "mdview contributors"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ap01lo/mdview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ap01lo/mdview/issues"
+  },
+  "homepage": "https://github.com/ap01lo/mdview#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

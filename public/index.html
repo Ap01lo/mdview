@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mdview</title>
+<meta name="description" content="A portable web-based Markdown viewer with file tree, themes, LaTeX and a native folder picker." />
+<meta name="theme-color" content="#7c3aed" />
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+<link rel="stylesheet" href="/static/style.css" />
+<!-- highlight.js (loaded early so marked's highlighter hook can use it) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.10.0/styles/github-dark.min.css">
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.10.0/lib/common.min.js"></script>
+<!-- vendor: markdown, sanitizer, math -->
+<script src="https://cdn.jsdelivr.net/npm/marked@13.0.3/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <img src="/static/favicon.svg" alt="" class="logo" />
+    <span class="title">mdview</span>
+    <span class="root" id="root-path" title=""></span>
+    <button id="open-dir" class="icon-btn open-dir-btn" title="打开其它目录…">📂</button>
+  </div>
+  <div class="tools">
+    <input type="search" id="search" placeholder="Search files (Ctrl+K)…  过滤/搜索文件" />
+    <button id="toggle-tree" class="icon-btn" aria-label="收起/展开侧边栏" title="收起/展开侧边栏">⟨⟩</button>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span>目录</span>
+      <button id="refresh" class="icon-btn" title="刷新">↻</button>
+    </div>
+    <div class="tree" id="tree" tabindex="0" aria-label="文件树"></div>
+    <div class="sidebar-foot" id="sidebar-foot"></div>
+
+    <!-- Settings: pinned to bottom-left of the sidebar -->
+    <div class="settings-anchor">
+      <button id="settings-btn" class="settings-btn" title="设置" aria-haspopup="dialog" aria-expanded="false">
+        <span class="settings-gear" aria-hidden="true">⚙</span>
+        <span class="settings-label">设置</span>
+      </button>
+    </div>
+  </aside>
+
+  <section class="viewer">
+    <div class="crumbs" id="crumbs"></div>
+    <article class="md-body" id="md-body">
+      <div class="placeholder">
+        <h2>👋 Welcome to mdview</h2>
+        <p>选择左侧任意 <code>.md</code> 文件即可在此预览。</p>
+        <p class="hint">快捷键：<kbd>↑</kbd>/<kbd>↓</kbd> 导航 · <kbd>Enter</kbd> 打开 · <kbd>Ctrl</kbd>+<kbd>K</kbd> 搜索</p>
+      </div>
+    </article>
+  </section>
+</main>
+
+<!-- settings panel (positioned at bottom-left of viewport) -->
+<div id="settings-panel" class="settings-panel hidden" role="dialog" aria-label="设置">
+  <div class="settings-header">
+    <span>快捷键</span>
+    <div class="settings-header-actions">
+      <button id="reset-shortcuts" class="settings-mini-btn" title="恢复默认">恢复默认</button>
+      <button id="close-settings" class="settings-mini-btn" title="关闭">✕</button>
+    </div>
+  </div>
+  <div id="shortcuts-list" class="shortcuts-list"></div>
+
+  <div class="settings-divider"></div>
+
+  <div class="settings-section-title">主题</div>
+  <div class="theme-picker-row">
+    <select id="theme-select" class="theme-select" aria-label="主题">
+      <option value="">加载中…</option>
+    </select>
+  </div>
+  <div id="theme-description" class="theme-description"></div>
+
+  <div class="settings-divider"></div>
+
+  <div class="settings-section-title">渲染选项</div>
+  <label class="settings-toggle">
+    <input type="checkbox" id="toggle-latex" />
+    <span>启用 LaTeX 数学公式渲染（KaTeX）</span>
+  </label>
+
+  <div class="settings-divider"></div>
+
+  <div class="settings-section-title">字体</div>
+
+  <div class="font-presets" id="font-presets" role="radiogroup" aria-label="字体预设">
+    <button class="font-preset" data-font="sans" role="radio" aria-checked="false">
+      <span class="fp-name">Sans Serif</span>
+      <span class="fp-sample" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;">Aa 中 文</span>
+    </button>
+    <button class="font-preset" data-font="serif" role="radio" aria-checked="false">
+      <span class="fp-name">Serif</span>
+      <span class="fp-sample" style="font-family:Georgia, 'Times New Roman', 'Songti SC', serif;">Aa 中 文</span>
+    </button>
+    <button class="font-preset" data-font="mono" role="radio" aria-checked="false">
+      <span class="fp-name">Monospace</span>
+      <span class="fp-sample" style="font-family:'Cascadia Code','Source Code Pro',Menlo,Consolas,monospace;">Aa 中 文</span>
+    </button>
+    <button class="font-preset" data-font="mixed" role="radio" aria-checked="false">
+      <span class="fp-name">Sans + Serif</span>
+      <span class="fp-sample" style="font-family:-apple-system,'PingFang SC',sans-serif;">Aa <span style="font-family:Georgia,serif;">中文</span></span>
+    </button>
+  </div>
+
+  <div class="font-size-row">
+    <label for="font-size-input">字号</label>
+    <input type="range" id="font-size-input" min="12" max="20" step="1" />
+    <span id="font-size-value" class="font-size-value">15px</span>
+  </div>
+
+  <div class="custom-font-row">
+    <label for="custom-font-input">自定义字体</label>
+    <input list="system-fonts" type="text" id="custom-font-input" placeholder="输入或选择系统字体…例如 Source Han Serif" />
+    <datalist id="system-fonts"></datalist>
+  </div>
+  <div id="custom-font-preview" class="custom-font-preview">预览：The quick brown fox. 中文示例文本。</div>
+
+  <div class="settings-tip" aria-live="polite"></div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

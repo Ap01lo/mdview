@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+# screenshot pipeline leaves intermediate frames behind
+docs/screenshots/frames/
+docs/screenshots/concat.txt
+# dev-time mdtest files
+docs/test-latex/
