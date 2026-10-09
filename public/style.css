@@ -217,7 +217,10 @@ html, body {
 .node.file .icon { color: var(--fg-muted); }
 .node.md .icon { color: var(--accent); }
 .children { display: none; padding-left: 14px; }
-.node.dir.expanded + .children { display: block; }
+/* Display is also driven inline by JS for initial render; this rule covers
+   any directory that gets the .expanded class after render. */
+.node.dir.expanded + .children,
+.children[style-display="block"] { display: block; }
 
 /* viewer */
 .viewer {

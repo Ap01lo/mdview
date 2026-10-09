@@ -31,6 +31,21 @@
   let tree = null;
   let activePath = null;
   let flatList = [];
+  // Set of directory paths the user has explicitly opened. Survives reloads
+  // so the tree doesn't collapse back to the default every time.
+  let expandedDirs = new Set();
+  function saveExpandedDirs() {
+    try { localStorage.setItem('mdview.expandedDirs', JSON.stringify([...expandedDirs])); }
+    catch (_) {}
+  }
+  function loadExpandedDirs() {
+    try {
+      const raw = localStorage.getItem('mdview.expandedDirs');
+      if (!raw) return;
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) expandedDirs = new Set(arr);
+    } catch (_) {}
+  }
 
   // ---------- settings persistence ----------
   const SETTINGS_KEYS = {
@@ -306,6 +321,13 @@
         el.classList.toggle('expanded');
         const children = wrap.nextElementSibling;
         if (children) children.style.display = el.classList.contains('expanded') ? 'block' : 'none';
+        if (el.classList.contains('expanded')) {
+          expandedDirs.add(node.path);
+          saveExpandedDirs();
+        } else {
+          expandedDirs.delete(node.path);
+          saveExpandedDirs();
+        }
         refreshFlatList();
       });
     } else if (node.type === 'file') {
@@ -316,15 +338,29 @@
     return wrap;
   }
 
-  function renderTree(nodes, depth = 0, parentEl = treeEl) {
+  function renderTree(nodes, depth = 0, parentEl = treeEl, expandedSet = null) {
+    // expandedSet is a Set of directory paths the user has explicitly opened.
+    // When it's null (initial render), we auto-expand only the top-level
+    // directories so the tree looks alive but isn't flooded.
+    const shouldExpand = (node) => {
+      if (expandedSet) return expandedSet.has(node.path);
+      return depth === 0; // default: expand top level
+    };
     for (const node of nodes || []) {
       if (node.type === 'dir' && node.children) {
         const wrap = makeNodeEl(node, depth);
+        const nodeEl = wrap.querySelector('.node');
+        const expanded = shouldExpand(node);
+        if (expanded) nodeEl.classList.add('expanded');
         parentEl.appendChild(wrap);
         const childrenWrap = document.createElement('div');
         childrenWrap.className = 'children';
+        // The CSS selector `.node.dir.expanded + .children` doesn't match here
+        // because `.node` is inside `wrap`, not a direct sibling of
+        // `childrenWrap`. Set the display inline so the state is unambiguous.
+        childrenWrap.style.display = expanded ? 'block' : 'none';
         parentEl.appendChild(childrenWrap);
-        renderTree(node.children, depth + 1, childrenWrap);
+        renderTree(node.children, depth + 1, childrenWrap, expandedSet);
       } else if (node.type === 'file') {
         parentEl.appendChild(makeNodeEl(node, depth));
       }
@@ -409,16 +445,12 @@
       rootEl.title = data.root;
       tree = data.tree;
       treeEl.innerHTML = '';
-      renderTree(tree);
-      refreshFlatList();
-      Array.from(treeEl.children).forEach((c) => {
-        const nodeEl = c.querySelector ? c.querySelector('.node') : null;
-        if (nodeEl && nodeEl.dataset.type === 'dir') {
-          nodeEl.classList.add('expanded');
-          const childsWrap = c.querySelector('.children');
-          if (childsWrap) childsWrap.style.display = 'block';
-        }
-      });
+      // First time on this root: only expand top-level directories so the user
+      // immediately sees files. Subsequent refreshes remember which folders
+      // the user has opened.
+      // Don't pass expandedDirs when expandedDirs is empty — that would tell
+      // renderTree "no folders are open" and leave everything collapsed.
+      renderTree(tree, 0, treeEl, expandedDirs.size > 0 ? expandedDirs : null);
       refreshFlatList();
       const count = treeEl.querySelectorAll('.node.file').length;
       sidebarFoot.textContent = `${count} 文件`;
@@ -958,6 +990,7 @@
 
 // ---------- bootstrap ----------
   loadShortcuts();
+  loadExpandedDirs();
   toggleLatexCheckbox.checked = latexEnabled;
   applySidebarState(loadBool(SETTINGS_KEYS.sidebar, false));
   const _font = loadFontSetting();
