@@ -4,6 +4,18 @@ All notable changes to mdview will be documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] — 2026-10-09
+
+### Fixed
+- File tree: the directory listing used to mark top-level folders
+  `expanded` but the child lists were not actually rendered (the CSS
+  selector `+ .children` never matched because the `.node` lives inside
+  a wrapper element). The result was a tree showing the heading triangles
+  but no files underneath, forcing the user to collapse and re-expand each
+  folder to see its contents. The tree now starts fully collapsed by default;
+  any folder the user manually expands is remembered in `localStorage` and
+  restored on the next launch.
+
 ## [1.0.0] —2026-10-08
 
 ### Added

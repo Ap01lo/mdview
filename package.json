@@ -1,6 +1,6 @@
 {
   "name": "@ap01lo/mdview",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Portable web-based Markdown viewer with file tree navigation, themes, LaTeX, and a native folder picker.",
   "main": "bin/mdview.js",
   "bin": {
