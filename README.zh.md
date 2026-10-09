@@ -65,7 +65,7 @@ mdview
 要求 Node.js **�?18**�?
 ### 从源码安�?
 ```bash
-git clone https://github.com/ap01lo/mdview.git
+git clone https://github.com/Ap01lo/mdview.git
 cd mdview
 npm install
 npm link          # 可选：注册全局 mdview 命令

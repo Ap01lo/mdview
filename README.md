@@ -85,7 +85,7 @@ Requires Node.js **ï¿?18**.
 ### From source
 
 ```bash
-git clone https://github.com/ap01lo/mdview.git
+git clone https://github.com/Ap01lo/mdview.git
 cd mdview
 npm install
 npm link          # optional ï¿?registers the `mdview` global command
