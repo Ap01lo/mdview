@@ -340,11 +340,11 @@
 
   function renderTree(nodes, depth = 0, parentEl = treeEl, expandedSet = null) {
     // expandedSet is a Set of directory paths the user has explicitly opened.
-    // When it's null (initial render), we auto-expand only the top-level
-    // directories so the tree looks alive but isn't flooded.
+    // When it's null (no remembered state), the default is everything
+    // collapsed — the user clicks to open folders. The tree starts tidy.
     const shouldExpand = (node) => {
       if (expandedSet) return expandedSet.has(node.path);
-      return depth === 0; // default: expand top level
+      return false; // default: keep everything collapsed
     };
     for (const node of nodes || []) {
       if (node.type === 'dir' && node.children) {
