@@ -10,11 +10,11 @@ This guide walks maintainers through cutting a release and shipping it to npm.
 
 ## Pre-flight checklist
 
-- [ ] `git status` is clean â€?no uncommitted changes
+- [ ] `git status` is clean â€”no uncommitted changes
 - [ ] You're on the `main` branch and pulled the latest
 - [ ] `package.json` version bumped (semver: patch / minor / major)
 - [ ] `CHANGELOG.md` updated with a dated entry
-- [ ] `npm test` runs and passes (we just print `--help` â€?sanity check the JS is loadable)
+- [ ] `npm test` runs and passes (we just print `--help` â€”sanity check the JS is loadable)
 - [ ] Screenshots up to date: `npm run screenshots` (if visual changes)
 
 ## Dry-run
@@ -71,9 +71,9 @@ npm publish --tag beta
 
 We follow **semver**:
 
-- **PATCH** (`1.0.x`) â€?bug fixes, dependency bumps, theme polish.
-- **MINOR** (`1.x.0`) â€?new feature that doesn't break existing flags/configs.
-- **MAJOR** (`x.0.0`) â€?breaking changes to themes / themes / API / config files.
+- **PATCH** (`1.0.x`) â€”bug fixes, dependency bumps, theme polish.
+- **MINOR** (`1.x.0`) â€”new feature that doesn't break existing flags/configs.
+- **MAJOR** (`x.0.0`) â€”breaking changes to themes / themes / API / config files.
 
 ## Rolling back a bad release
 
@@ -82,5 +82,5 @@ npm unpublish mdview@1.0.1      # within 72 hours
 npm deprecate mdview@1.0.1 "broken, please use 1.0.2"
 ```
 
-`unpublish` is restricted â€?npm may deny it for popular packages. Prefer
+`unpublish` is restricted â€”npm may deny it for popular packages. Prefer
 `deprecate` to nudge users to the fixed one.

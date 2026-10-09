@@ -6,3 +6,8 @@ docs/screenshots/frames/
 docs/screenshots/concat.txt
 # dev-time mdtest files
 docs/test-latex/
+# editor local settings
+.vscode/
+# debug / diagnostics
+diag.js
+*.bak

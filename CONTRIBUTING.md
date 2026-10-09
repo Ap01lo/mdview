@@ -8,7 +8,7 @@ changes focused.
 - [ ] Run `node bin/mdview.js` and click around to make sure nothing regressed.
 - [ ] For any new theme, drop a `themes/<name>.json` file (see existing ones).
 - [ ] For any new feature, update `README.md` and `CHANGELOG.md`.
-- [ ] Don't add heavy dependencies â€?mdview ships almost nothing.
+- [ ] Don't add heavy dependencies â€”mdview ships almost nothing.
 
 ## Reporting bugs
 
@@ -50,7 +50,7 @@ sensible default.
 ## Style
 
 - Two-space indent in JavaScript.
-- No build step â€?keep `public/app.js` as a single IIFE-style file.
+- No build step â€”keep `public/app.js` as a single IIFE-style file.
 - Avoid adding frameworks unless absolutely necessary.
 
 ## Releases

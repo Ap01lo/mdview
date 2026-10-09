@@ -4,7 +4,7 @@ All notable changes to mdview will be documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] â€?2026-10-08
+## [1.0.0] â€”2026-10-08
 
 ### Added
 - File tree with keyboard navigation, fuzzy filter, and live refresh.
@@ -16,7 +16,7 @@ All notable changes to mdview will be documented here. The format follows
 - Theming via JSON config files in `themes/`. Ships with four built-in themes:
   `github-light`, `github-dark`, `serif-light`, `noir`.
 - Font settings: four presets, a custom-font input that scans 270+ system
-  fonts, and a slider for the body size (12â€?0 px).
+  fonts, and a slider for the body size (12â€”0 px).
 - Customisable keyboard shortcuts (9 actions) with conflict detection.
 - Settings panel anchored to the bottom-left of the sidebar.
 - Native folder picker: Windows (PowerShell FolderBrowserDialog), macOS

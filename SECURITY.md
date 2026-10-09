@@ -23,4 +23,4 @@ mdview is a local-only file viewer:
 - It caps file reads at 5 MB and runs all rendered HTML through DOMPurify.
 
 Anything beyond that (e.g. exposing the server on a public network) is your
-responsibility â€?mdview is not designed for hostile environments.
+responsibility â€”mdview is not designed for hostile environments.

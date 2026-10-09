@@ -19,7 +19,7 @@
   <img alt="PRs" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
 </p>
 
-> **Why mdview?** In the AI era we constantly receive Markdown �?task briefs,
+> **Why mdview?** In the AI era we constantly receive Markdown �task briefs,
 > research notes, agent outputs, exported chats. We just want to **read** them
 > cleanly, without launching a heavy editor, syncing an account, or installing
 > a browser extension. Existing Markdown viewers are either over-featured
@@ -44,7 +44,7 @@
 
 `mdview` is a single-binary-feel CLI tool: start it in any folder and a browser
 window opens, showing a file tree on the left and a rendered Markdown document
-on the right. Browse any folder at runtime via the 📂 button �?no
+on the right. Browse any folder at runtime via the 📂 button �no
 restart required.
 
 It is built to read **exactly one thing** (your local Markdown files) and do it
@@ -57,15 +57,15 @@ touches that make long-form reading comfortable.
 |--|--|
 | 📂 **File tree** with keyboard navigation, fuzzy filter, and live refresh | |
 | 📖 **GFM Markdown** with code highlighting (highlight.js) and safe HTML (DOMPurify) | |
-| 🔢 **LaTeX** (`$...$` and `$$...$$`) via KaTeX �?toggle on/off | |
+| 🔢 **LaTeX** (`$...$` and `$$...$$`) via KaTeX �toggle on/off | |
 | 📊 **Three-line tables** (academic style) with centred text | |
-| 🎨 **Themes** as JSON files �?ship your own, four included by default | |
-| 🔠 **Fonts** �?4 presets + scan of 270+ system fonts via `datagrid` | |
+| 🎨 **Themes** as JSON files �ship your own, four included by default | |
+| 🔠 **Fonts** �4 presets + scan of 270+ system fonts via `datagrid` | |
 | ⌨️ **Customisable shortcuts** (9 actions, conflict detection) | |
-| ⚙️ **Settings panel** at bottom-left �?no modal spam | |
+| ⚙️ **Settings panel** at bottom-left �no modal spam | |
 | 🌗 **Auto dark mode** that follows your OS | |
 | 🪟 **Native folder picker** (Windows / macOS / Linux) | |
-| 💾 **Persistent** �?all your choices live in `localStorage` | |
+| 💾 **Persistent** �all your choices live in `localStorage` | |
 
 ## Install
 
@@ -80,7 +80,7 @@ npm install -g @ap01lo/mdview
 mdview
 ```
 
-Requires Node.js **�?18**.
+Requires Node.js **�18**.
 
 ### From source
 
@@ -88,12 +88,12 @@ Requires Node.js **�?18**.
 git clone https://github.com/Ap01lo/mdview.git
 cd mdview
 npm install
-npm link          # optional �?registers the `mdview` global command
+npm link          # optional �registers the `mdview` global command
 ```
 
 ### Requirements
 
-- Node.js **�?18**
+- Node.js **�18**
 - A modern browser (Chromium, Firefox, Safari, Edge)
 
 ## Usage
@@ -110,16 +110,16 @@ mdview --help                # full help
 ```
 
 When the server is running, click **📂** in the title bar (or click the
-current path) to switch directories at any time �?mdview will pop up a native
+current path) to switch directories at any time �mdview will pop up a native
 folder dialog.
 
 ## Keyboard shortcuts
 
 | Key | Action |
 |--|--|
-| `Ctrl/�?+ \` | Toggle sidebar |
-| `Ctrl/�?+ K` | Focus search |
-| `Ctrl/�?+ ,` | Open settings |
+| `Ctrl/�+ \` | Toggle sidebar |
+| `Ctrl/�+ K` | Focus search |
+| `Ctrl/�+ ,` | Open settings |
 | `↑` / `↓` | Move in tree |
 | `→` / `←` | Expand / collapse directory |
 | `Enter` / `Space` | Open file |
@@ -165,15 +165,15 @@ restart required.
 mdview/
 ├── bin/mdview.js          CLI entry + Express server
 ├── public/                SPA (HTML, CSS, JS, SVG icon)
-�?  ├── index.html
-�?  ├── style.css
-�?  ├── app.js
-�?  └── favicon.svg
+�  ├── index.html
+�  ├── style.css
+�  ├── app.js
+�  └── favicon.svg
 ├── themes/                Built-in themes
-�?  ├── github-light.json
-�?  ├── github-dark.json
-�?  ├── serif-light.json
-�?  └── noir.json
+�  ├── github-light.json
+�  ├── github-dark.json
+�  ├── serif-light.json
+�  └── noir.json
 ├── package.json
 ├── LICENSE
 └── README.md
@@ -181,7 +181,7 @@ mdview/
 
 ## Contributing
 
-Issues and PRs welcome. Please keep PRs focused �?mdview is small on purpose.
+Issues and PRs welcome. Please keep PRs focused �mdview is small on purpose.
 
 When adding a new theme, also include a short description in the JSON; it shows
 up next to the theme selector.
@@ -190,7 +190,7 @@ To cut a release, see [PUBLISHING.md](./PUBLISHING.md).
 
 ## License
 
-MIT �?see [LICENSE](./LICENSE).
+MIT �see [LICENSE](./LICENSE).
 
 ---
 
